@@ -1,0 +1,78 @@
+.modal-margin {
+  margin: 2rem;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  mat-icon {
+    color: #1976d2;
+  }
+}
+
+.modal-content {
+  min-width: 500px;
+  max-width: 600px;
+  padding: 5px !important;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 0 0 0;
+  margin-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+    
+    &:first-child {
+      color: #666;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 600px) {
+  .modal-content {
+    min-width: 300px;
+    max-width: 400px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,151 @@
+.header-add {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-icon {
+  color: #5daa4c;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #131313;
+}
+
+.upload-container {
+  background-color: #f1f1ee;
+  padding: 40px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.upload-box {
+  border: 2px dashed #5daa4c;
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  // Hover state
+  &:hover {
+    background-color: rgba(93, 170, 76, 0.05);
+    border-color: #4a9539;
+  }
+  
+  // Drag over state
+  &.drag-over {
+    background-color: rgba(93, 170, 76, 0.1);
+    border-color: #4a9539;
+    border-style: solid;
+    transform: scale(1.02);
+  }
+  
+  // Valid file state (green border)
+  &.file-valid {
+    border-color: #28a745;
+    border-style: solid;
+    background-color: rgba(40, 167, 69, 0.05);
+    
+    .upload-icon {
+      color: #28a745;
+    }
+  }
+  
+  // Error state (red border)
+  &.file-error {
+    border-color: #dc3545;
+    border-style: solid;
+    background-color: rgba(220, 53, 69, 0.05);
+    
+    .upload-icon {
+      color: #dc3545;
+    }
+  }
+}
+
+.icon {
+  display: inline-block;
+  background-color: #ecfae9;
+  border-radius: 50%;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.upload-icon {
+  color: #5daa4c;
+  font-size: 40px;
+}
+
+.bold-text {
+  font-weight: bold;
+  color: #131313;
+  margin: 10px 0;
+}
+
+.light-text {
+  color: #6f7274;
+}
+
+.button-container {
+  text-align: center;
+}
+
+.delete-button {
+  color: #131313;
+  border: 1px solid #e4e4e4;
+  margin-right: 10px;
+}
+
+.save-button {
+  color: #ffffff;
+  background-color: #d9d9d9;
+  transition: all 0.3s ease;
+  
+  // Enabled state - when file is valid
+  &.enabled {
+    background-color: #5daa4c;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #4a9539;
+    }
+  }
+  
+  // Disabled state (default)
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Error message styling
+.error-message {
+  color: #dc3545;
+  font-weight: 500;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+// Icon background color changes based on state
+.upload-box {
+  .icon {
+    transition: background-color 0.3s ease;
+  }
+  
+  &.file-valid .icon {
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+  
+  &.file-error .icon {
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+  
+  &.drag-over .icon {
+    background-color: rgba(93, 170, 76, 0.15);
+  }
+}

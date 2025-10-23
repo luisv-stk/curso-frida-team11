@@ -1,0 +1,49 @@
+<div class="header-add">
+  <mat-icon class="back-icon">arrow_back</mat-icon>
+  <span class="header-title">Añadir producto</span>
+</div>
+<div class="upload-container">
+  <div class="upload-box" 
+       [class.drag-over]="isDragOver"
+       [class.file-valid]="isFileValid"
+       [class.file-error]="errorMessage && !isFileValid"
+       (click)="onUploadAreaClick()"
+       (dragover)="onDragOver($event)"
+       (dragenter)="onDragEnter($event)"
+       (dragleave)="onDragLeave($event)"
+       (drop)="onDrop($event)">
+    
+    <!-- Hidden file input for manual selection -->
+    <input #fileInput
+           type="file"
+           accept=".jpg,.jpeg,.png"
+           style="display: none"
+           (change)="onFileSelected($event)">
+    
+    <div class="icon">
+      <mat-icon class="upload-icon">cloud_upload</mat-icon>
+    </div>
+    
+    <!-- Display selected file name or default text -->
+    <ng-container *ngIf="selectedFile; else defaultText">
+      <p class="bold-text">Archivo seleccionado: {{ selectedFile.name }}</p>
+      <p class="light-text">Tamaño: {{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+    </ng-container>
+    
+    <ng-template #defaultText>
+      <p class="bold-text">Arrastra desde tu ordenador la imagen del producto</p>
+      <p class="light-text">Recuerda que el archivo no puede supera los 2 Mb. y tiene que ser en formato .JPG o .PNG</p>
+    </ng-template>
+    
+    <!-- Error message display -->
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+</div>
+<div class="button-container">
+  <button mat-button class="delete-button" (click)="onDelete()">Borrar</button>
+  <button mat-button 
+          class="save-button" 
+          [disabled]="!isFileValid"
+          [class.enabled]="isFileValid"
+          (click)="onSave()">Guardar</button>
+</div>

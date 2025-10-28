@@ -2,10 +2,15 @@ package com.frida.productsdemo.models;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Clase básica que representa un producto.
  * No usa JPA ni persistencia, ideal para lógica o pruebas simples.
  */
+@Getter
+@Setter
 public class Product {
     private String referencia;
     private String nombre;
@@ -19,6 +24,7 @@ public class Product {
     
     /**
      * Constructor completo para todos los campos.
+     * 
      * @param referencia Código único de producto.
      * @param nombre Nombre del producto.
      * @param marca Marca del producto.
@@ -38,21 +44,5 @@ public class Product {
         this.departamento = departamento;
     }
 
-    // Getters
-    public String getReferencia() { return referencia; }
-    public String getNombre() { return nombre; }
-    public String getMarca() { return marca; }
-    public String getDescripcion() { return descripcion; }
-    public BigDecimal getPrecio() { return precio; }
-    public int getNumeroDisponible() { return numeroDisponible; }
-    public String getDepartamento() { return departamento; }
 
-    // Setters
-    public void setReferencia(String referencia) { this.referencia = referencia; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setMarca(String marca) { this.marca = marca; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public void setPrecio(BigDecimal precio) { this.precio = precio; }
-    public void setNumeroDisponible(int numeroDisponible) { this.numeroDisponible = numeroDisponible; }
-    public void setDepartamento(String departamento) { this.departamento = departamento; }
 }

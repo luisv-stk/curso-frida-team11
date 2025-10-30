@@ -8,7 +8,7 @@ import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-add-product',
-    standalone: true,
+  standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.scss'],
@@ -126,11 +126,35 @@ export class AddProductComponent {
         this.productService.addProduct(newProduct);
         
         console.log('Product saved successfully:', newProduct);
+
+        // Try to analyze the uploaded file (but continue regardless of result)
+        this.productService.analyzeFile(this.selectedFile).subscribe({
+          next: (analysisResult) => {
+            console.log('File analysis completed:', analysisResult);
+          },
+          error: (error) => {
+            console.error('Error analyzing file:', error);
+            
+            // Provide specific error messaging based on error type
+            if (error.status === 0) {
+              console.warn('Backend connection failed - continuing without analysis');
+            } else if (error.status >= 400 && error.status < 500) {
+              console.warn('Client error during analysis - continuing without analysis');
+            } else if (error.status >= 500) {
+              console.warn('Server error during analysis - continuing without analysis');
+            } else {
+              console.warn('Unknown error during analysis - continuing without analysis');
+            }
+            
+            // Product was saved successfully despite analysis failure
+            console.log('Product saved successfully despite analysis error:', newProduct);
+          }
+        });
         
         // Reset form state
         this.resetForm();
         
-        // Navigate to product list to show updated data
+        // Navigate to product list to show updated data (always navigate)
         this.router.navigate(['/product-list']);
       } catch (error) {
         console.error('Error saving product:', error);

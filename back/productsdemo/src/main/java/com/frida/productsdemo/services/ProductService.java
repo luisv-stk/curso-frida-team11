@@ -20,7 +20,28 @@ import com.frida.productsdemo.services.frida.ModelConstants;
 import com.google.gson.Gson;
 
 /**
- * Servicio de productos para operaciones relacionadas con productos.
+ * Servicio de productos para operaciones CRUD completas.
+ * 
+ * Esta clase proporciona la lógica de negocio para el manejo de productos,
+ * incluyendo operaciones de creación, lectura, actualización y eliminación.
+ * Actúa como intermediario entre el controlador y la capa de persistencia,
+ * manejando las conversiones entre entidades de dominio (Product) y DTOs
+ * de persistencia (ProductDto).
+ * 
+ * Funcionalidades principales:
+ * - Obtener todos los productos
+ * - Obtener un producto por ID
+ * - Crear nuevos productos
+ * - Actualizar productos existentes
+ * - Eliminar productos
+ * - Análisis de productos mediante imágenes usando IA
+ * 
+ * Todas las operaciones incluyen validaciones de negocio apropiadas
+ * y manejo de errores para garantizar la integridad de los datos.
+ * 
+ * @author Sistema de Productos
+ * @version 1.0
+ * @since 2024
  */
 @Component
 public class ProductService {
@@ -37,6 +58,17 @@ public class ProductService {
 	@Autowired
 	private FridaLlmService fridaService;
 
+    /**
+     * Analiza una imagen de producto utilizando inteligencia artificial.
+     * 
+     * Este método procesa una imagen enviada como archivo multipart y utiliza
+     * el servicio de IA de Frida para extraer información del producto como
+     * referencia, nombre, marca, descripción, precio, stock y departamento.
+     * 
+     * @param file La imagen del producto a analizar (formato JPEG, PNG, etc.)
+     * @return Un objeto Product con los datos extraídos de la imagen, o null si hay error
+     * @throws RuntimeException si ocurre un error durante el procesamiento de la imagen
+     */
     public Product producEvaluation(MultipartFile file) {
         
     	
@@ -91,6 +123,14 @@ public class ProductService {
     	
     }
 
+	/**
+	 * Obtiene la lista completa de todos los productos.
+	 * 
+	 * Recupera todos los productos almacenados en la base de datos
+	 * y los convierte a objetos de dominio para su uso en la aplicación.
+	 * 
+	 * @return Lista de todos los productos disponibles. Lista vacía si no hay productos.
+	 */
 	public List<Product> getAllProducts() {
 		List<ProductDto> entities = productRepository.findAll();
 		return productMapper.toEntityList(entities);
@@ -98,10 +138,36 @@ public class ProductService {
 	}
 	
 	/**
+	 * Obtiene un producto específico por su ID.
+	 * 
+	 * Busca un producto en la base de datos utilizando su identificador único.
+	 * Si el producto no existe, retorna null.
+	 * 
+	 * @param id El identificador único del producto a buscar
+	 * @return El producto encontrado o null si no existe
+	 */
+	public Product getProductById(Long id) {
+		// Buscar el producto por ID en el repositorio
+		ProductDto productDto = productRepository.findById(id).orElse(null);
+		
+		if (productDto == null) {
+			return null;
+		}
+		
+		// Convertir ProductDto a Product y retornar
+		return productMapper.toEntity(productDto);
+	}
+
+	/**
 	 * Crea un nuevo producto en la base de datos.
 	 * 
-	 * @param product El producto a crear
-	 * @return El producto creado con su ID asignado
+	 * Persiste un nuevo producto en la base de datos después de realizar
+	 * las conversiones necesarias entre objetos de dominio y DTOs.
+	 * El ID del producto será asignado automáticamente por la base de datos.
+	 * 
+	 * @param product El producto a crear con todos sus datos requeridos
+	 * @return El producto creado con su ID asignado por la base de datos
+	 * @throws RuntimeException si ocurre un error durante la persistencia
 	 */
 	public Product createProduct(Product product) {
 		// Convertir Product a ProductDto para persistir
@@ -113,8 +179,69 @@ public class ProductService {
 		// Convertir de vuelta a Product y retornar
 		return productMapper.toEntity(savedDto);
 	}
+
+	/**
+	 * Actualiza un producto existente en la base de datos.
+	 * 
+	 * Busca el producto por su ID y actualiza todos sus campos con los nuevos valores.
+	 * Si el producto no existe, retorna null.
+	 * 
+	 * @param id El identificador único del producto a actualizar
+	 * @param product Los nuevos datos del producto
+	 * @return El producto actualizado o null si no existe
+	 */
+	public Product updateProduct(Long id, Product product) {
+		// Verificar si el producto existe
+		ProductDto existingDto = productRepository.findById(id).orElse(null);
+		
+		if (existingDto == null) {
+			return null;
+		}
+		
+		// Convertir el nuevo producto a DTO
+		ProductDto updatedDto = productMapper.toDto(product);
+		
+		// Asignar el ID del producto existente
+		updatedDto.setId(id);
+		
+		// Guardar los cambios en la base de datos
+		ProductDto savedDto = productRepository.save(updatedDto);
+		
+		// Convertir de vuelta a Product y retornar
+		return productMapper.toEntity(savedDto);
+	}
+
+	/**
+	 * Elimina un producto de la base de datos.
+	 * 
+	 * Busca el producto por su ID y lo elimina si existe.
+	 * 
+	 * @param id El identificador único del producto a eliminar
+	 * @return true si el producto fue eliminado, false si no existía
+	 */
+	public boolean deleteProduct(Long id) {
+		// Verificar si el producto existe
+		if (!productRepository.existsById(id)) {
+			return false;
+		}
+		
+		// Eliminar el producto
+		productRepository.deleteById(id);
+		
+		return true;
+	}
 	
-	// Extrae substring del primer objeto/array JSON haciendo balanceo de llaves/corchetes
+	/**
+	 * Extrae el primer fragmento JSON válido de una cadena de texto.
+	 * 
+	 * Método utilitario que busca y extrae el primer objeto JSON o array JSON
+	 * completo encontrado en un texto. Realiza balanceo de llaves/corchetes
+	 * para asegurar que el JSON extraído esté bien formado.
+	 * 
+	 * @param text La cadena de texto que contiene JSON embebido
+	 * @return El fragmento JSON extraído como cadena
+	 * @throws IllegalArgumentException si no se encuentra JSON válido o está mal formado
+	 */
 	public static String extractJsonFragment(String text) {
 	    int start = -1;
 	    char open = 0;
